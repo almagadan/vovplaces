@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Памятное место</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="img/markers/memorial-marker.png">
+</head>
+<body>
+    <header class="header">
+        <div class="header__container">
+            <a href="index.html" class="back-button">← Назад к карте</a>
+            <h1 id="place-title" class="header__title"></h1>
+        </div>
+    </header>
+
+    <main class="place-container">
+        <div class="place-content">
+            <img id="place-photo" class="main-image" alt="Фото памятника">
+            <div class="place-details">
+                <div id="place-description" class="description"></div>
+                <div class="additional-info">
+                    <p id="place-address" class="address"></p>
+                    <p id="place-history" class="history"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const placeId = urlParams.get('id');
+
+            if (placeId) {
+                fetch('places/data.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        const place = data.find(p => p.id == placeId);
+                        if (place) {
+                            // Заполнение данных
+                            document.title = place.name;
+                            document.getElementById('place-title').textContent = place.name;
+                            document.getElementById('place-photo').src = `img/${place.photo}`;
+                            document.getElementById('place-description').textContent = place.description;
+                            
+                            if (place.address) {
+                                document.getElementById('place-address').textContent = `Адрес: ${place.address}`;
+                            }
+                            
+                            if (place.history) {
+                                document.getElementById('place-history').textContent = `История: ${place.history}`;
+                            }
+                        }
+                    })
+                    .catch(error => console.error('Ошибка загрузки данных:', error));
+            }
+        });
+    </script>
+</body>
+</html>
